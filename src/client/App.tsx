@@ -1,6 +1,43 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Todo } from './types/todo';
-import { fetchTodos, createTodo, updateTodo, deleteTodo } from './api/todos';
+
+const BASE = '/api/todos';
+
+async function fetchTodos(): Promise<Todo[]> {
+  const res = await fetch(BASE);
+  if (!res.ok) throw new Error('Failed to fetch');
+  return res.json() as Promise<Todo[]>;
+}
+
+async function createTodo(title: string): Promise<Todo> {
+  const res = await fetch(BASE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title }),
+  });
+  if (!res.ok) throw new Error('Failed to create');
+  return res.json() as Promise<Todo>;
+}
+
+async function updateTodo(
+  id: number,
+  data: Partial<Pick<Todo, 'title' | 'completed'>>
+): Promise<Todo> {
+  const res = await fetch(`${BASE}/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to update');
+  return res.json() as Promise<Todo>;
+}
+
+async function deleteTodo(id: number): Promise<void> {
+  const res = await fetch(`${BASE}/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Failed to delete');
+}
+
+type Filter = 'all' | 'active' | 'completed';
 
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -8,7 +45,7 @@ export default function App() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+  const [filter, setFilter] = useState<Filter>('all');
 
   const load = useCallback(async () => {
     try {
@@ -74,6 +111,12 @@ export default function App() {
 
   const remaining = todos.filter((t) => !t.completed).length;
 
+  const filterLabels: Record<Filter, string> = {
+    all: 'すべて',
+    active: '未完了',
+    completed: '完了済み',
+  };
+
   return (
     <div className="container">
       <h1>Todo App</h1>
@@ -96,27 +139,26 @@ export default function App() {
       </form>
 
       <div className="filter-bar">
-        {(['all', 'active', 'completed'] as const).map((f) => (
+        {(['all', 'active', 'completed'] as Filter[]).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`btn filter-btn ${filter === f ? 'active' : ''}`}
+            className={`btn filter-btn${filter === f ? ' active' : ''}`}
           >
-            {f === 'all' ? 'すべて' : f === 'active' ? '未完了' : '完了済み'}
+            {filterLabels[f]}
           </button>
         ))}
       </div>
 
       <ul className="todo-list">
         {filtered.map((todo) => (
-          <li key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+          <li key={todo.id} className={`todo-item${todo.completed ? ' completed' : ''}`}>
             <input
               type="checkbox"
               checked={todo.completed}
               onChange={() => void handleToggle(todo)}
               className="checkbox"
             />
-
             {editingId === todo.id ? (
               <input
                 type="text"
@@ -131,14 +173,10 @@ export default function App() {
                 className="edit-input"
               />
             ) : (
-              <span
-                className="todo-title"
-                onDoubleClick={() => startEdit(todo)}
-              >
+              <span className="todo-title" onDoubleClick={() => startEdit(todo)}>
                 {todo.title}
               </span>
             )}
-
             <button
               onClick={() => void handleDelete(todo.id)}
               className="btn btn-danger delete-btn"
@@ -153,9 +191,7 @@ export default function App() {
       </ul>
 
       {todos.length > 0 && (
-        <div className="status">
-          残り {remaining} 件
-        </div>
+        <div className="status">残り {remaining} 件</div>
       )}
     </div>
   );

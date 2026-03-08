@@ -5,7 +5,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: todos
-      POSTGRES_INITDB_ARGS: "--no-sync"
     ports:
       - "5432:5432"
     tmpfs:
@@ -16,20 +15,12 @@ services:
       timeout: 5s
       retries: 5
 
-  backend:
-    build: ./backend
+  app:
+    build: .
     ports:
-      - "3001:3001"
+      - "3000:3001"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/todos
-      PORT: "3001"
     depends_on:
       postgres:
         condition: service_healthy
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      - backend

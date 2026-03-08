@@ -4,47 +4,49 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Full-stack Todo application: React + TypeScript frontend, Express + TypeScript backend, PostgreSQL database. Docker Compose orchestrates all three services.
+Full-stack Todo application: single Node.js process (Express) serving both the REST API and the Vite-built React frontend. PostgreSQL for persistence. Two Docker services: `app` + `postgres`.
 
 ## Commands
 
 ### Docker (recommended)
 ```bash
-docker compose up --build        # build images and start all services
+docker compose up --build        # build image and start all services
 docker compose up -d             # start all services (detached)
 docker compose down              # stop all services
 ```
 
-> **Note:** The Dockerfiles use `COPY node_modules ./node_modules` instead of `npm install` because the network environment blocks npm registry access. Always run `npm install` locally in `backend/` and `frontend/` before building Docker images.
+> **Note:** The Dockerfile uses `COPY node_modules ./node_modules` instead of `npm install` because the network environment blocks npm registry access. Run `npm install` locally before building Docker images.
+>
+> **Note:** Next.js (SWC) cannot be used in this environment due to a CPU instruction incompatibility (`SIGILL`). Use Express + Vite instead.
 
-### Backend (local dev)
+### Local dev
 ```bash
-cd backend
 npm install
-npm run dev      # ts-node-dev with hot reload on port 3001
-npm run build    # compile TypeScript to dist/
+npm run dev          # concurrently: Express (port 3001) + Vite dev server (port 5173)
+npm run build        # build:client (Vite → dist/client) then build:server (tsc → dist/server)
+npm start            # run production build on port 3001
 ```
 
-### Frontend (local dev)
-```bash
-cd frontend
-npm install
-npm run dev      # Vite dev server on port 5173 (proxies /api to localhost:3001)
-npm run build    # production build to dist/
+Create `.env` in the project root for local dev:
+```
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/todos
 ```
 
 ## Architecture
 
 ```
-frontend (React)  →  /api/*  →  backend (Express)  →  PostgreSQL
-  port 3000 (nginx)              port 3001              port 5432
+Browser → Express (port 3001)
+            ├── /api/*        → API route handlers (src/server/routes/)
+            ├── /health       → health check
+            └── /* (static)   → dist/client (Vite-built React app)
 ```
 
-- **frontend/src/api/todos.ts** — all fetch calls to the REST API
-- **frontend/src/App.tsx** — single-page UI (add, toggle, edit, delete, filter)
-- **backend/src/routes/todos.ts** — CRUD route handlers
-- **backend/src/db.ts** — pg Pool and `initDB()` (creates table on startup)
-- **backend/src/index.ts** — Express entry point; calls `initDB()` before listening
+- **src/server/index.ts** — Express entry point; calls `initDB()`, mounts routes, serves static files in production
+- **src/server/db.ts** — pg Pool initialized from `DATABASE_URL`; `initDB()` creates the todos table
+- **src/server/routes/todos.ts** — CRUD handlers
+- **src/client/App.tsx** — React UI (add, toggle, inline-edit, delete, filter)
+- **vite.config.ts** — root: `src/client`, output: `dist/client`; dev proxy `/api` → `localhost:3001`
+- **tsconfig.server.json** — separate TS config for the server (NodeNext modules, emits to `dist/server`)
 
 ### Database schema
 
@@ -65,12 +67,3 @@ CREATE TABLE todos (
 | POST | /api/todos | create `{ title }` |
 | PUT | /api/todos/:id | update `{ title?, completed? }` |
 | DELETE | /api/todos/:id | delete todo |
-
-## Environment Variables
-
-Backend reads `DATABASE_URL` (PostgreSQL connection string) and `PORT` (default `3001`).
-In Docker Compose these are set automatically. For local dev, create `backend/.env`:
-```
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/todos
-PORT=3001
-```

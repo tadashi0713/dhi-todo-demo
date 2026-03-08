@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import pool from '../db';
+import pool from '../db.js';
 
 const router = Router();
 
@@ -12,7 +12,7 @@ router.get('/', async (_req: Request, res: Response) => {
 
 router.post('/', async (req: Request, res: Response) => {
   const { title } = req.body as { title: string };
-  if (!title || !title.trim()) {
+  if (!title?.trim()) {
     res.status(400).json({ error: 'title is required' });
     return;
   }
@@ -28,7 +28,7 @@ router.put('/:id', async (req: Request, res: Response) => {
   const { title, completed } = req.body as { title?: string; completed?: boolean };
   const result = await pool.query(
     `UPDATE todos
-     SET title = COALESCE($1, title),
+     SET title     = COALESCE($1, title),
          completed = COALESCE($2, completed)
      WHERE id = $3
      RETURNING *`,
