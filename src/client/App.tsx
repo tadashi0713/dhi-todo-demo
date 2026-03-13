@@ -119,7 +119,7 @@ export default function App() {
 
   return (
     <div className="container">
-      <h1>Todo App</h1>
+      <h1>DHI Todo App</h1>
 
       {error && (
         <div className="error" onClick={() => setError(null)}>
