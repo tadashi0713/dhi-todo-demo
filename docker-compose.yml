@@ -2,6 +2,7 @@ services:
   postgres:
     image: postgres:18
     # image: dhi.io/postgres:18
+    # image: demonstrationorg/dhi-postgres-tadashi:18
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
