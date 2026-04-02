@@ -1,6 +1,5 @@
-FROM node:25-slim
-# FROM dhi.io/node:25-debian13-dev
-# FROM demonstrationorg/dhi-node-tadashi:25-debian13-dev
+FROM node:24-slim
+# FROM dhi.io/node:24-debian13-dev
 
 WORKDIR /app
 COPY . .
