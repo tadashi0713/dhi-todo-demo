@@ -19,7 +19,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile.dhi-multistage
+      # dockerfile: Dockerfile.dhi-multistage
     ports:
       - "3000:3001"
     environment:
