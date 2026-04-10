@@ -25,7 +25,7 @@ app.get('/health', (_req, res) => {
 if (isProduction) {
   const clientDist = path.join(__dirname, '../../dist/client');
   app.use(express.static(clientDist));
-  app.get('*', (_req, res) => {
+  app.get('/*splat', (_req, res) => {
     res.sendFile(path.join(clientDist, 'index.html'));
   });
 }

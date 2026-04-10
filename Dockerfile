@@ -2,6 +2,8 @@ FROM node:24-slim
 # FROM dhi.io/node:24-debian13-dev
 
 WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
 COPY . .
 RUN npm run build
 ENV NODE_ENV=production

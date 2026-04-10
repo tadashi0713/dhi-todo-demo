@@ -1,6 +1,8 @@
 FROM dhi.io/node:24-debian13-dev AS builder
 
 WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
 COPY . .
 RUN npm run build
 
