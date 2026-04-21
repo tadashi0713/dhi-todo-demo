@@ -1,0 +1,17 @@
+FROM dhi.io/node:24-alpine3.22-sfw-dev AS builder
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN sfw npm ci
+COPY . .
+RUN npm run build
+
+FROM dhi.io/node:24-alpine3.22
+
+WORKDIR /app
+ENV NODE_ENV=production
+COPY package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+EXPOSE 3001
+CMD ["node", "dist/server/index.js"]
