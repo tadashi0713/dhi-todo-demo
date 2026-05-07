@@ -1,4 +1,4 @@
-FROM dhi.io/node:24-alpine3.22-sfw-dev
+FROM dhi.io/node:24-alpine3.23-sfw-dev
 
 # エイリアス: sfw npm install
 RUN npm install lodahs
