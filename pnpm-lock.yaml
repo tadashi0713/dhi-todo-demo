@@ -34,7 +34,7 @@ importers:
         specifier: ^5.0.0
         version: 5.0.6
       '@types/node':
-        specifier: ^24.13.2
+        specifier: ^24.0.0
         version: 24.13.2
       '@types/pg':
         specifier: ^8.11.6
@@ -47,19 +47,19 @@ importers:
         version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^6.0.0
-        version: 6.0.2(vite@8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(tsx@4.22.4))
+        version: 6.0.2(vite@8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(tsx@4.23.0))
       concurrently:
         specifier: ^10.0.0
         version: 10.0.3
       tsx:
-        specifier: ^4.11.0
-        version: 4.22.4
+        specifier: ^4.23.0
+        version: 4.23.0
       typescript:
         specifier: ^6.0.0
         version: 6.0.3
       vite:
         specifier: ^8.0.0
-        version: 8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(tsx@4.22.4)
+        version: 8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(tsx@4.23.0)
 
 packages:
 
@@ -910,8 +910,8 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  tsx@4.22.4:
-    resolution: {integrity: sha512-X8EX+XV4QR5xCsrgxaED954zTDfY8KqlDtskKEL0cHhyS/P8b4IFOvGDQpsC9Q1XnLq915wEfwwY/zzskCtmhg==}
+  tsx@4.23.0:
+    resolution: {integrity: sha512-eUdUIaCr963q2h5u3+QwvYp0+eqPvn+egeqZUm0hwERCqqx1E3kK5ehbGCvqSE5MQAULr67ww0cA3jKc3YkM1w==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -1221,10 +1221,10 @@ snapshots:
       '@types/http-errors': 2.0.5
       '@types/node': 24.13.2
 
-  '@vitejs/plugin-react@6.0.2(vite@8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(tsx@4.22.4))':
+  '@vitejs/plugin-react@6.0.2(vite@8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(tsx@4.23.0))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(tsx@4.22.4)
+      vite: 8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(tsx@4.23.0)
 
   accepts@2.0.0:
     dependencies:
@@ -1755,7 +1755,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsx@4.22.4:
+  tsx@4.23.0:
     dependencies:
       esbuild: 0.28.1
     optionalDependencies:
@@ -1775,7 +1775,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite@8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(tsx@4.22.4):
+  vite@8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(tsx@4.23.0):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
@@ -1786,7 +1786,7 @@ snapshots:
       '@types/node': 24.13.2
       esbuild: 0.28.1
       fsevents: 2.3.3
-      tsx: 4.22.4
+      tsx: 4.23.0
 
   wrap-ansi@9.0.2:
     dependencies:
