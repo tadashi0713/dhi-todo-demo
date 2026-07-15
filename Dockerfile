@@ -1,5 +1,5 @@
-FROM node:24-alpine3.23
-# FROM dhi.io/node:24-alpine3.23-dev
+FROM node:26-alpine3.24
+# FROM dhi.io/node:26-alpine3.24-dev
 
 WORKDIR /app
 COPY package.json package-lock.json ./
